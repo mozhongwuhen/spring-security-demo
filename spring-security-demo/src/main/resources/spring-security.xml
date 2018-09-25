@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+    <!-- 设置页面不登录也能够访问 -->
+    <http pattern="/login.html" security="none"></http>
+    <http pattern="/error.html" security="none"></http>
+    <!-- 页面的拦截规则   use-expressions:是否启动SPEL表达式 默认是true-->
+    <http use-expressions="false">
+          <!-- 包含目录下的子目录 -->
+          <!-- 当前登录用户必须要有User角色才能访问根目录及其子目录资源  注意:access后面的ROLE_必须是大写-->
+         <intercept-url pattern="/**" access="ROLE_USER"/>
+         <!-- 开启表单登录功能  -->
+         <form-login login-page="/login.html" default-target-url="/index.html" authentication-failure-url="/error.html" always-use-default-target="true"/>
+         <csrf disabled="true"/>
+         <!-- 允许框架页使用 -->
+         <headers>
+             <frame-options policy="SAMEORIGIN"/>
+         </headers>
+    </http>
+     <!-- 认证管理器 -->
+     <authentication-manager>
+         <authentication-provider>
+             <user-service>
+                <!-- 配置访问成功的页面的用户名和密码 admin这个用户属于ROLE_USER这个角色-->
+                <user name="admin" password="123456" authorities="ROLE_USER"/>
+             </user-service>
+         </authentication-provider>
+     </authentication-manager>
+		
+</beans:beans>
